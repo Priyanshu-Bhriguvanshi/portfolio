@@ -32,7 +32,7 @@ const Contact = () => {
 
       {/* Contact Form */}
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-8">
-        <Form action='' method='' className="space-y-6">
+        <Form action='https://formspree.io/f/mqakgwzv' method='POST' className="space-y-6">
           <div>
             <input
               placeholder="Your Name"
