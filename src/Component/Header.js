@@ -1,121 +1,110 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+
+// Reusable NavLink component
+const NavItem = ({ to, children, onClick }) => {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        isActive
+          ? "text-teal-400"
+          : "hover:text-teal-300 transition-colors duration-200"
+      }
+      onClick={onClick}
+    >
+      {children}
+    </NavLink>
+  );
+};
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+
+    // Toggle overflow-hidden on body to prevent scrolling
+    if (!menuOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    document.body.classList.remove("overflow-hidden"); // Ensure scrolling is enabled when the menu is closed
+  };
 
   return (
     <header className="bg-gray-800 text-white shadow-md">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
-        <div className="font-extrabold text-2xl">
-          <Link to="/" className="text-teal-400 hover:text-teal-300 transition-colors">
+        <div className="font-extrabold text-3xl">
+          <NavItem to="/" onClick={closeMenu}>
             Priyanshu
-          </Link>
+          </NavItem>
         </div>
 
-        {/* Hamburger Icon for Mobile */}
-        <div className="lg:hidden">
-          <button
-            className="text-white focus:outline-none"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <svg
-              className="w-6 h-6"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              )}
-            </svg>
-          </button>
-        </div>
+        {/* Hamburger Menu (visible on mobile) */}
+        <button
+          className="lg:hidden text-2xl focus:outline-none z-50"
+          onClick={toggleMenu}
+        >
+          {menuOpen ? (
+            <span className="text-white">✖</span>
+          ) : (
+            <span className="text-white">☰</span>
+          )}
+        </button>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:block">
-          <ul className="flex gap-6 text-lg font-medium">
+        {/* Fullscreen Nav Links (Mobile) */}
+        <nav
+          className={`fixed inset-0 bg-gray-900 bg-opacity-95 flex flex-col items-center justify-center gap-8 text-2xl z-40 transition-transform ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          } lg:hidden`}
+        >
+          <ul className="text-center">
             <li>
-              <Link to="/" className="hover:text-teal-300 transition-colors">
+              <NavItem to="/" onClick={closeMenu}>
                 Home
-              </Link>
+              </NavItem>
             </li>
             <li>
-              <Link to="/about" className="hover:text-teal-300 transition-colors">
+              <NavItem to="/about" onClick={closeMenu}>
                 About
-              </Link>
+              </NavItem>
             </li>
             <li>
-              <Link to="/services" className="hover:text-teal-300 transition-colors">
-                Services
-              </Link>
+              <NavItem to="/service" onClick={closeMenu}>
+                Service
+              </NavItem>
             </li>
             <li>
-              <Link to="/contact" className="hover:text-teal-300 transition-colors">
+              <NavItem to="/contact" onClick={closeMenu}>
                 Contact
-              </Link>
+              </NavItem>
             </li>
           </ul>
+        </nav>
+
+        {/* Nav Links (Desktop) */}
+        <nav className="hidden lg:flex items-center gap-8 text-lg font-medium">
+          <NavItem to="/" onClick={closeMenu}>
+            Home
+          </NavItem>
+          <NavItem to="/about" onClick={closeMenu}>
+            About
+          </NavItem>
+          <NavItem to="/service" onClick={closeMenu}>
+            Service
+          </NavItem>
+          <NavItem to="/contact" onClick={closeMenu}>
+            Contact
+          </NavItem>
         </nav>
       </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <nav className="lg:hidden bg-gray-900">
-          <ul className="flex flex-col gap-4 text-lg font-medium p-4">
-            <li>
-              <Link
-                to="/"
-                className="hover:text-teal-300 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/about"
-                className="hover:text-teal-300 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/services"
-                className="hover:text-teal-300 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Services
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/contact"
-                className="hover:text-teal-300 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      )}
     </header>
   );
 };
